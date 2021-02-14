@@ -1,18 +1,28 @@
 import React, { useState } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 
 import { postAdded } from './postsSlice'
 
 export const AddPostForm = () => {
   const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
+  const [author, setAuthor] = useState('')
 
   const dispatch = useDispatch()
 
   const onTitleChanged = (e) => setTitle(e.target.value)
   const onContentChanged = (e) => setContent(e.target.value)
+  const onAuthorChanged = (e) => setAuthor(e.target.value)
 
-  const onSavePostClicked = () => dispatch(postAdded(title, content))
+  const authors = useSelector((state) => state.users)
+
+  const mapAuthors = authors.map((author) => (
+    <option value={author.id} key={author.id}>
+      {author.name}
+    </option>
+  ))
+
+  const onSavePostClicked = () => dispatch(postAdded(title, content, author))
 
   return (
     <section>
@@ -33,6 +43,11 @@ export const AddPostForm = () => {
           value={content}
           onChange={onContentChanged}
         />
+        <label>Auther</label>
+        <select value={author} onChange={onAuthorChanged}>
+          <option value=""></option>
+          {mapAuthors}
+        </select>
         <button type="button" onClick={onSavePostClicked}>
           Save Post
         </button>
